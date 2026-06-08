@@ -103,6 +103,10 @@ export default function Accounts() {
             {rightLinks.map((link) => (
               <button
                 key={link}
+                onClick={() => {
+                  if (link === 'View Account Statement') navigate(ROUTES.ACCOUNT_STATEMENT)
+                  if (link === 'Account Details' || link === 'Account Summary') navigate(ROUTES.ACCOUNT_DETAILS)
+                }}
                 className="bg-white rounded-2xl border border-gray-100 shadow-sm px-6 py-4 flex items-center justify-between hover:border-[#5c3d8f] transition-colors"
               >
                 <span className="text-gray-700 text-[14px]">{link}</span>
