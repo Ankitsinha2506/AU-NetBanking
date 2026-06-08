@@ -117,6 +117,7 @@ export default function Login() {
                   {otp.map((v, i) => (
                     <input
                       key={i}
+                      id={`otp-${i}`}
                       type="text"
                       maxLength={1}
                       value={v}
@@ -124,7 +125,10 @@ export default function Login() {
                         const val = e.target.value.slice(-1)
                         const isNum = val >= '0' && val <= '9'
                         const next = [...otp]; next[i] = isNum ? val : ''; setOtp(next)
-                        if (isNum && e.target.nextSibling) e.target.nextSibling.focus()
+                        if (isNum) {
+                          if (i < 5) document.getElementById(`otp-${i + 1}`)?.focus()
+                          else if (next.every(d => d !== '')) navigate('/dashboard')
+                        }
                       }}
                       className="w-8 sm:w-10 border-b-2 border-gray-300 text-center text-[18px] sm:text-[20px] outline-none focus:border-[#5c3d8f] pb-1"
                     />
