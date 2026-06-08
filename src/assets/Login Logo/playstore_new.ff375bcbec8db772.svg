@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="93" height="22" viewBox="0 0 93 22">
+  <defs>
+    <clipPath id="clip-img_playstore">
+      <rect width="93" height="22"/>
+    </clipPath>
+  </defs>
+  <g id="img_playstore" clip-path="url(#clip-img_playstore)">
+    <rect width="93" height="22" fill="#fff"/>
+    <g id="Group_1" data-name="Group 1" transform="translate(-1240 -989)">
+      <text id="Play_Store" data-name="Play Store" transform="translate(1264 1005)" fill="#9b9b9b" font-size="14" font-family="Quicksand-Medium, Quicksand" font-weight="500"><tspan x="0" y="0">Play Store</tspan></text>
+      <g id="PlayStoreIcon" transform="translate(1241 990)">
+        <path id="logo" d="M0,18.632V1.37A1.524,1.524,0,0,1,.856,0l9.986,10L.852,20A1.522,1.522,0,0,1,0,18.632Zm11.7-7.772,2.307,2.31L3.091,19.481Zm.86-.861L15.1,7.458l2.3,1.333a1.524,1.524,0,0,1,.016,2.407L15.1,12.539ZM3.1.521l10.91,6.307L11.7,9.137Z" fill="#9b9b9b"/>
+      </g>
+    </g>
+  </g>
+</svg>
