@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="8px" height="13px" viewBox="0 0 8 13" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53.2 (72643) - https://sketchapp.com -->
+    <title>arrow-right-s</title>
+    <desc>Created with Sketch.</desc>
+    <g id="02_Account-Summary_BR2_AccountDetails(UpdateNickname)" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="01_BR2_AccountDetails" transform="translate(-889.000000, -199.000000)" fill="#F37435" fill-rule="nonzero">
+            <g id="Group-10" transform="translate(878.000000, 190.000000)">
+                <path d="M20.2853972,18.420425 C20.4488725,18.587131 20.7139182,18.587131 20.8773935,18.420425 C21.0408688,18.253719 21.0408688,17.9834352 20.8773935,17.8167291 L15.2959982,12.1250295 C15.1325229,11.9583235 14.8674771,11.9583235 14.7040018,12.1250295 L9.12260646,17.8167291 C8.95913118,17.9834352 8.95913118,18.253719 9.12260646,18.420425 C9.28608176,18.587131 9.55112754,18.587131 9.71460285,18.420425 L15.0032338,13.0272756 L20.2853972,18.420425 Z" id="arrow-right-s" transform="translate(15.000000, 15.272727) rotate(90.000000) translate(-15.000000, -15.272727) "></path>
+            </g>
+        </g>
+    </g>
+</svg>
