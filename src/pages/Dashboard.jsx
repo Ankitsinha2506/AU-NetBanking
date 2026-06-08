@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { ROUTES } from '../core/constants/routes.constant'
 import auLogo from '../assets/Main homepage/aulogo.png'
 import sidebarBg from '../assets/Main homepage/sidebar_bg.5ed99c6e91c433b9.png'
 import accountsIcon from '../assets/Main homepage/mxaccountsicon.svg'
@@ -74,9 +75,9 @@ const menuItems = [
   { label: 'Logout', icon: logoutIcon },
 ]
 
-function Card({ label, icon, badge, iconSize = 120 }) {
+function Card({ label, icon, badge, iconSize = 120, onClick }) {
   return (
-    <div className="flex flex-col items-center gap-3 cursor-pointer group" style={{ width: '115px' }}>
+    <div onClick={onClick} className="flex flex-col items-center gap-3 cursor-pointer group" style={{ width: '115px' }}>
       <div className="w-[115px] h-[115px] bg-[#fdf1ee] rounded-2xl flex items-center justify-center relative group-hover:shadow-md transition-shadow shrink-0">
         {badge && (
           <span className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#4a2070] text-white text-[11px] px-3 py-[2px] rounded font-semibold z-10">
@@ -135,7 +136,11 @@ export default function Dashboard() {
               {menuItems.map(({ label, icon, badge }) => (
                 <button
                   key={label}
-                  onClick={() => { if (label === 'Logout') navigate('/login'); setMenuOpen(false) }}
+                  onClick={() => {
+                    if (label === 'Logout') navigate(ROUTES.LOGIN)
+                    if (label === 'Accounts') navigate(ROUTES.ACCOUNTS)
+                    setMenuOpen(false)
+                  }}
                   className="flex items-center justify-between w-full px-5 py-4 border-b border-gray-100 hover:bg-gray-50"
                 >
                   <div className="flex items-center gap-4">
@@ -228,7 +233,11 @@ export default function Dashboard() {
 
         <div className="flex-1 px-10 py-6 flex flex-col gap-8">
           <div className="flex items-start justify-between pr-4">
-            {row1.map(c => <Card key={c.label} {...c} />)}
+            {row1.map(c => (
+              <Card key={c.label} {...c}
+                onClick={c.label === 'Accounts' ? () => navigate(ROUTES.ACCOUNTS) : undefined}
+              />
+            ))}
           </div>
           <div className="flex items-start justify-between pr-4">
             {row2.map(c => <Card key={c.label} {...c} />)}
