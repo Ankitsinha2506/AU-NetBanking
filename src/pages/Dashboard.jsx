@@ -24,6 +24,7 @@ import contactIcon from '../assets/Main homepage/mxContactus.svg'
 import positivepayIcon from '../assets/Main homepage/settings_fill_icon.a093aaed39c636b2.svg'
 import logoutIcon from '../assets/Main homepage/mxlogouticon.svg'
 import homeIcon from '../assets/Main homepage/home_icon.1a4eda3b5b14fff4.svg'
+import userProfile from '../core/constants/userProfile'
 
 const row1 = [
   { label: 'Accounts', icon: accountsIcon },
@@ -116,16 +117,16 @@ export default function Dashboard() {
             {/* Header */}
             <div className="flex items-start justify-between px-5 pt-5 pb-4 border-b border-gray-100">
               <div className="flex items-center gap-3">
-                <div className="w-14 h-14 rounded-full flex items-center justify-center bg-white border border-gray-200">
-                  <svg width="52" height="52" fill="none" viewBox="0 0 24 24" stroke="#ffffff" strokeWidth="1.2">
-                    <path strokeLinecap="round" d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <div className="w-14 h-14 rounded-full flex items-center justify-center bg-[#f3eaf9] border border-[#c9a8e8]">
+                  <svg width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="#7b3fa0" strokeWidth="1.8">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
                     <circle cx="12" cy="7" r="4"/>
                   </svg>
                 </div>
                 <div>
                   <p className="text-[12px] text-gray-400">Welcome</p>
-                  <p className="text-[16px] font-bold text-gray-800">Keshav</p>
-                  <p className="text-[13px] text-[#7b3fa0] font-medium">View Profile</p>
+                  <p className="text-[16px] font-bold text-gray-800">{userProfile.firstName}</p>
+                  <p className="text-[13px] text-[#7b3fa0] font-medium cursor-pointer" onClick={() => { navigate(ROUTES.PROFILE); setMenuOpen(false) }}>View Profile</p>
                 </div>
               </div>
               <button onClick={() => setMenuOpen(false)} className="text-gray-500 text-[22px] leading-none mt-1">✕</button>
@@ -182,24 +183,24 @@ export default function Dashboard() {
         </div>
 
         <p className="text-gray-500 text-[13px] mb-1">Welcome</p>
-        <p className="text-gray-900 text-[20px] font-semibold mb-6">Keshav</p>
+        <p className="text-gray-900 text-[20px] font-semibold mb-6">{userProfile.firstName}</p>
 
-        <div className="bg-white rounded-[18px] shadow-sm px-5 py-4 w-[200px]">
-          <p className="text-[11px] text-gray-400 text-center mb-3">Savings Account Balance</p>
-          <div className="flex items-center justify-center gap-1">
-            <span className="text-[15px] font-semibold text-gray-800">₹</span>
+        <div className="rounded-[28px] px-6 py-5 w-[290px]" style={{ backgroundColor: 'rgba(255,255,255,0.55)' }}>
+          <p className="text-[13px] text-gray-600 text-center mb-3 font-medium">Savings Account Balance</p>
+          <div className="flex items-center justify-center gap-2">
+            <span className="text-[17px] font-semibold text-gray-800">₹</span>
             {showBalance ? (
-              <span className="text-[14px] font-semibold text-gray-800">12,345.00</span>
+              <span className="text-[16px] font-semibold text-gray-800">{userProfile.savingsBalance}</span>
             ) : (
-              <span className="flex gap-[5px] items-center mx-1">
+              <span className="flex gap-[6px] items-center">
                 {[0,1,2].map(i => (
-                  <span key={i} className="w-[6px] h-[6px] rounded-full bg-gray-700 inline-block" />
+                  <span key={i} className="w-[7px] h-[7px] rounded-full bg-gray-700 inline-block" />
                 ))}
               </span>
             )}
             <button
               onClick={() => setShowBalance(v => !v)}
-              className="ml-1 text-[11px] border border-orange-400 text-orange-500 px-2 py-[2px] rounded-full font-medium"
+              className="text-[13px] border border-orange-400 text-orange-500 px-4 py-[3px] rounded-full font-medium ml-1"
             >
               {showBalance ? 'Hide' : 'View'}
             </button>

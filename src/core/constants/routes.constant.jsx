@@ -4,4 +4,5 @@ export const ROUTES = {
   DASHBOARD: '/dashboard',
   ACCOUNTS: '/accounts',
   ACCOUNT_DETAILS: '/accounts/details',
+  PROFILE: '/profile',
 }

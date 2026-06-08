@@ -1,0 +1,32 @@
+const userProfile = {
+  name: 'Keshav Pralhad Golande',
+  firstName: 'Keshavaa',
+  savingsBalance: '12,345.00',
+  custId: '******54',
+  username: '41701754',
+  dob: '12/**/****',
+  pan: 'D*******2L',
+  aadhar: '********4309',
+  ckyc: '**********8476',
+  mobile: '77****1055',
+  email: 'ke*************@gmail.com',
+  permanentAddress: {
+    line1: '107 Near 38 Chari Karande Wasti',
+    line2: 'Golande Niwas Ukkadgaon',
+    city: 'AHMEDNAGAR',
+    state: 'MAHARASHTRA',
+    pincode: '413702',
+  },
+  communicationAddress: {
+    line1: 'E 102',
+    line2: 'Lakshadeep Palace',
+    line3: 'Near Hdfc Bank',
+    city: 'PUNE CITY',
+    state: 'MAHARASHTRA',
+    pincode: '411027',
+  },
+  annualIncome: '2.5 Lakh - 5 Lakh',
+  profileComplete: 83,
+}
+
+export default userProfile
