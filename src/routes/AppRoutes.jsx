@@ -5,6 +5,7 @@ import Login from '../pages/Login'
 import Dashboard from '../pages/Dashboard'
 import Accounts from '../pages/Accounts'
 import AccountDetails from '../pages/AccountDetails'
+import AccountStatement from '../pages/AccountStatement'
 
 export default function AppRoutes() {
   return (
@@ -14,6 +15,7 @@ export default function AppRoutes() {
       <Route path={ROUTES.DASHBOARD} element={<Dashboard />} />
       <Route path={ROUTES.ACCOUNTS} element={<Accounts />} />
       <Route path={ROUTES.ACCOUNT_DETAILS} element={<AccountDetails />} />
+      <Route path={ROUTES.ACCOUNT_STATEMENT} element={<AccountStatement />} />
       <Route path="*" element={<Navigate to={ROUTES.HOME} replace />} />
     </Routes>
   )
