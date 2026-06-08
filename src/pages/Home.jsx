@@ -1,9 +1,19 @@
-import React from 'react'
+import Navbar from '../components/Navbar'
+import HeroSlider from '../components/HeroSlider'
+import ExploreProducts from '../components/ExploreProducts'
+import BlogMedia from '../components/BlogMedia'
+import StayInformed from '../components/StayInformed'
+import Footer from '../components/public/Footer'
 
-const Home = () => {
+export default function Home() {
   return (
-    <div>Home</div>
+    <div>
+      <Navbar />
+      <HeroSlider />
+      <ExploreProducts />
+      <BlogMedia />
+      <StayInformed />
+      <Footer />
+    </div>
   )
 }
-
-export default Home
