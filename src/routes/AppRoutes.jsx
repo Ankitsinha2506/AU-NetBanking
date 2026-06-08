@@ -6,6 +6,7 @@ import Dashboard from '../pages/Dashboard'
 import Accounts from '../pages/Accounts'
 import AccountDetails from '../pages/AccountDetails'
 import AccountStatement from '../pages/AccountStatement'
+import Profile from '../pages/Profile'
 
 export default function AppRoutes() {
   return (
@@ -17,6 +18,7 @@ export default function AppRoutes() {
       <Route path={ROUTES.ACCOUNT_DETAILS} element={<AccountDetails />} />
       <Route path={ROUTES.ACCOUNT_STATEMENT} element={<AccountStatement />} />
       <Route path="*" element={<Navigate to={ROUTES.HOME} replace />} />
+       <Route path={ROUTES.PROFILE} element={<Profile />} />
     </Routes>
   )
 }

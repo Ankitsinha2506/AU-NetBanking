@@ -5,4 +5,5 @@ export const ROUTES = {
   ACCOUNTS: '/accounts',
   ACCOUNT_DETAILS: '/accounts/details',
   ACCOUNT_STATEMENT: '/accounts/statement',
+   PROFILE: '/profile',
 }
