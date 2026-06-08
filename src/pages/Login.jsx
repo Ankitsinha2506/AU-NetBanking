@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
 import LoginImg from '../assets/LoginImg.jpeg'
 import applyNowIcon from '../assets/Login Logo/applynow_iconib.9dfddd585271a3c7.svg'
 import offersIcon from '../assets/Login Logo/offers-icon.5986cb1f80414c7f.svg'
@@ -32,10 +33,18 @@ export default function Login() {
   const [customerId, setCustomerId] = useState('')
   const [captcha, setCaptcha] = useState('')
   const timerRef = useRef(null)
+  const navigate = useNavigate()
+  const location = useLocation()
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search)
+    const option = params.get('option')
+    if (option) setDirectTo(decodeURIComponent(option))
+  }, [])
 
   useEffect(() => {
     if (showOTP) {
-      history.pushState({ otp: true }, '')
+      navigate(location.pathname + '?otp=true', { replace: false })
       const handlePop = () => setShowOTP(false)
       window.addEventListener('popstate', handlePop)
       return () => window.removeEventListener('popstate', handlePop)
@@ -101,7 +110,7 @@ export default function Login() {
               <div className="py-4 max-w-md mx-auto px-4">
                 <h2 className="text-center text-[20px] sm:text-[22px] font-semibold text-[#5c3d8f] mb-2">Verification</h2>
                 <p className="text-center text-[12px] sm:text-[14px] font-bold text-gray-700 mb-6 sm:mb-8 whitespace-nowrap">
-                  One-time password (OTP) has been sent to your mobile number <span>**********</span>
+                  One-time password (OTP) has been sent to your mobile number <span>*******1055</span>
                 </p>
                 <h3 className="text-center text-[18px] sm:text-[20px] font-semibold text-[#5c3d8f] mb-6 sm:mb-8">Enter OTP</h3>
                 <div className="flex justify-center gap-3 sm:gap-6 mb-2">

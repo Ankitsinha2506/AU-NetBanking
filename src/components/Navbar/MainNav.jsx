@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import auLogo from "../../assets/homepage/AU-Logo_H30px-1.svg";
 import searchIcon from "../../assets/homepage/search-icon (1).svg";
 import micIcon from "../../assets/homepage/mic-icon.svg";
@@ -24,6 +25,7 @@ const loginOptions = [
 ];
 
 export default function MainNav() {
+  const navigate = useNavigate();
   const [loginOpen, setLoginOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
@@ -103,11 +105,12 @@ export default function MainNav() {
             {loginOpen && (
               <div className="absolute right-0 top-[calc(100%+8px)] w-[180px] bg-white rounded-xl shadow-2xl border border-gray-200 z-50 overflow-hidden">
                 {loginOptions.map((option, i) => (
-                  <a key={i} href="#"
-                    className="block px-4 py-3 text-[13px] hover:bg-gray-50 transition-colors border-b border-gray-200 last:border-0"
+                  <button key={i}
+                    onClick={() => { setLoginOpen(false); navigate(`/login?option=${encodeURIComponent(option)}`); }}
+                    className="block w-full text-left px-4 py-3 text-[13px] hover:bg-gray-50 transition-colors border-b border-gray-200 last:border-0"
                     style={{ color: "#1f2937", fontWeight: 600 }}>
                     {option}
-                  </a>
+                  </button>
                 ))}
               </div>
             )}
