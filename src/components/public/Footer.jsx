@@ -1,3 +1,5 @@
+import auLogo from '../../assets/homepage/AU-Logo_H30px-1.svg'
+
 const footerColumns = [
   {
     title: 'AU Small\nFinance Bank',
@@ -210,8 +212,27 @@ const footerLinkGroups = [
   ],
 ]
 
-const storeBadges = ['App Store', 'Google Play']
-const socialLinks = ['fb', 'ig', 'in', 'x', 'yt']
+import appStoreIcon from '../../assets/footerlogo/app_store.svg'
+import googlePlayIcon from '../../assets/footerlogo/google_play_store.svg'
+import facebookIcon from '../../assets/footerlogo/facebook.svg'
+import instagramIcon from '../../assets/footerlogo/instagram.svg'
+import linkedinIcon from '../../assets/footerlogo/linkedin.svg'
+import twitterIcon from '../../assets/footerlogo/twitter.svg'
+import youtubeIcon from '../../assets/footerlogo/youtube.svg'
+import pciIcon from '../../assets/footerlogo/pci.svg'
+import dicIcon from '../../assets/footerlogo/dic.svg'
+
+const storeBadges = [
+  { label: 'App Store', icon: appStoreIcon },
+  { label: 'Google Play', icon: googlePlayIcon },
+]
+const socialLinks = [
+  { key: 'fb', icon: facebookIcon },
+  { key: 'ig', icon: instagramIcon },
+  { key: 'in', icon: linkedinIcon },
+  { key: 'x', icon: twitterIcon },
+  { key: 'yt', icon: youtubeIcon },
+]
 
 const Footer = () => {
   return (
@@ -219,15 +240,13 @@ const Footer = () => {
       <div className="mx-auto grid max-w-[1390px] grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-[1.05fr_1fr_1fr_1fr] lg:gap-20 xl:gap-28">
         {footerColumns.map((column) => (
           <section key={column.title} className="min-w-0">
-            <h2
-              className={
-                column.brand
-                  ? 'whitespace-pre-line text-[40px] font-bold leading-[1.28] tracking-normal sm:text-[42px]'
-                  : 'mb-5 text-[14px] font-bold leading-tight tracking-normal text-white'
-              }
-            >
+          {column.brand ? (
+              <img src={auLogo} alt="AU Small Finance Bank" className="h-12 mb-4" />
+            ) : (
+            <h2 className="mb-5 text-[14px] font-bold leading-tight tracking-normal text-white">
               {column.title}
             </h2>
+            )}
 
             {column.links.length > 0 && (
               <nav aria-label={column.title}>
@@ -284,13 +303,9 @@ const Footer = () => {
               Download AU 0101 - Digital Banking app
             </h3>
             <div className="flex flex-wrap gap-2">
-              {storeBadges.map((store) => (
-                <a
-                  key={store}
-                  href="#"
-                  className="inline-flex h-8 min-w-[92px] items-center justify-center rounded-[4px] bg-white px-3 text-[10px] font-semibold text-[#101019] transition-opacity hover:opacity-85 focus:outline-none focus:ring-2 focus:ring-white/60 focus:ring-offset-2 focus:ring-offset-[#101019]"
-                >
-                  {store}
+              {storeBadges.map(({ label, icon }) => (
+                <a key={label} href="#" className="transition-opacity hover:opacity-85">
+                  <img src={icon} alt={label} className="h-9" />
                 </a>
               ))}
             </div>
@@ -300,8 +315,8 @@ const Footer = () => {
             <h3 className="mb-3 text-[13px] font-bold text-white">
               PCI DSS Security Compliant
             </h3>
-            <div className="inline-flex h-12 w-24 items-center justify-center rounded-[4px] bg-white text-[13px] font-bold text-[#506c7b]">
-              pci dss
+            <div className="inline-flex items-center justify-center">
+              <img src={pciIcon} alt="PCI DSS" className="h-12" />
             </div>
           </section>
 
@@ -309,8 +324,8 @@ const Footer = () => {
             <h3 className="mb-3 text-[13px] font-bold text-white">
               Registered with DICGC
             </h3>
-            <div className="inline-flex h-12 w-24 items-center justify-center rounded-[4px] bg-white text-[13px] font-bold text-[#2a8f74]">
-              DICGC
+            <div className="inline-flex items-center justify-center">
+              <img src={dicIcon} alt="DICGC" className="h-12" />
             </div>
           </section>
         </div>
@@ -329,13 +344,9 @@ const Footer = () => {
         </nav>
 
         <nav aria-label="Social links" className="flex flex-wrap gap-3">
-          {socialLinks.map((item) => (
-            <a
-              key={item}
-              href="#"
-              className="flex h-5 w-5 items-center justify-center rounded-full border border-[#6c7280] text-[9px] uppercase leading-none text-[#b9c6d8] transition-colors hover:border-white hover:text-white"
-            >
-              {item}
+          {socialLinks.map(({ key, icon }) => (
+            <a key={key} href="#" className="transition-opacity hover:opacity-80">
+              <img src={icon} alt={key} className="h-5 w-5" />
             </a>
           ))}
         </nav>

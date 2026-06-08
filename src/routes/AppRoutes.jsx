@@ -2,6 +2,8 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import { ROUTES } from '../core/constants/routes.constant'
 import Home from '../pages/Home'
 import Login from '../pages/Login'
+import Accounts from '../pages/Accounts'
+import AccountDetails from '../pages/AccountDetails'
 
 export default function AppRoutes() {
   return (
@@ -12,3 +14,4 @@ export default function AppRoutes() {
     </Routes>
   )
 }
+ AppRoutes
