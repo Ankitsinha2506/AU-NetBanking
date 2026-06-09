@@ -3,7 +3,7 @@ import autoTable from 'jspdf-autotable'
 import { accountInfo } from './transactions'
 import pdfLogoUrl from '../assets/pdflogo.svg'
 
-function loadImageAsBase64(url, targetW, targetH) {
+function loadLogoOnPurple(url, targetW, targetH) {
   return new Promise((resolve) => {
     const img = new Image()
     img.crossOrigin = 'anonymous'
@@ -14,7 +14,7 @@ function loadImageAsBase64(url, targetW, targetH) {
       const ctx = canvas.getContext('2d')
       ctx.fillStyle = '#6d276d'
       ctx.fillRect(0, 0, targetW, targetH)
-      ctx.drawImage(img, 0, 0, targetW, targetH)
+      ctx.drawImage(img, -1, -1, targetW + 2, targetH + 2)
       resolve(canvas.toDataURL('image/png'))
     }
     img.onerror = () => resolve(null)
@@ -26,55 +26,53 @@ function addFooter(doc) {
   const W = doc.internal.pageSize.getWidth()
   const H = doc.internal.pageSize.getHeight()
   const pageCount = doc.internal.getNumberOfPages()
-
   for (let i = 1; i <= pageCount; i++) {
     doc.setPage(i)
 
-    doc.setFontSize(7.5)
-    doc.setTextColor(60, 60, 60)
-    doc.setFont('helvetica', 'italic')
-    doc.text('This is an auto generated statement and requires no signature', W / 2, H - 34, { align: 'center' })
+    // Line 1: auto-generated text + page number
+    doc.setFontSize(10)
+    doc.setTextColor(50, 50, 50)
     doc.setFont('helvetica', 'normal')
-    doc.setFontSize(7)
-    doc.text(`Page ${i} of ${pageCount}`, W - 10, H - 34, { align: 'right' })
+    doc.text('This is an auto generated statement and requires no signature', W / 2, H - 42, { align: 'center' })
+    doc.text(`Page ${i} of ${pageCount}`, W - 10, H - 42, { align: 'right' })
 
-    doc.setDrawColor(210, 200, 200)
-    doc.line(7, H - 30, W - 7, H - 30)
+    // Purple divider line
+    doc.setDrawColor(109, 39, 109)
+    doc.setLineWidth(0.5)
+    doc.line(0, H - 37, W, H - 37)
 
-    doc.setFontSize(7)
-    doc.setTextColor(80, 80, 80)
-    doc.setFont('helvetica', 'bold')
-    doc.text('Call us at',      10, H - 24)
-    doc.text('Website',         52, H - 24)
-    doc.text('Email',           95, H - 24)
-    doc.text('Write to us at', 148, H - 24)
-    doc.text('Follow us on',   190, H - 24)
-
-    doc.setFont('helvetica', 'normal')
-    doc.setFontSize(6.5)
-    doc.text('1800 1200 1200',         10, H - 19)
-    doc.text('www.aubank.in',           52, H - 19)
-    doc.text('customercare@aubank.in',  95, H - 19)
-    doc.text('Reg. office address',    148, H - 19)
-    doc.text('Facebook/Twitter',       190, H - 19)
-
-    doc.setFillColor(255, 228, 228)
-    doc.rect(0, H - 14, W, 7, 'F')
-    doc.setTextColor(100, 40, 40)
-    doc.setFontSize(6.5)
+    // Purple disclaimer text
+    doc.setFontSize(9)
+    doc.setTextColor(109, 39, 109)
     doc.setFont('helvetica', 'normal')
     doc.text(
       'Please review the information provided in the statement. In case of any discrepancy, please inform the Bank immediately',
-      W / 2, H - 9.5, { align: 'center' }
+      W / 2, H - 32, { align: 'center' }
     )
 
+    // 5 evenly spaced contact columns
+    const cols = [10, 50, 90, 135, 175]
+    const labels = ['Call us at', 'Website', 'Email', 'Write to us at', 'Follow us on']
+    const values = ['1800 1200 1200', 'www.aubank.in', 'customercare@aubank.in', 'Reg. office address', 'Facebook/Twitter']
+
+    doc.setFontSize(8.5)
+    doc.setTextColor(109, 39, 109)
+    doc.setFont('helvetica', 'bold')
+    cols.forEach((x, idx) => doc.text(labels[idx], x, H - 24))
+
+    doc.setFont('helvetica', 'normal')
+    doc.setTextColor(109, 39, 109)
+    cols.forEach((x, idx) => doc.text(values[idx], x, H - 18))
+
+    // Purple bottom bar
     doc.setFillColor(109, 39, 109)
-    doc.rect(0, H - 7, W, 7, 'F')
+    doc.rect(0, H - 13, W, 13, 'F')
     doc.setTextColor(255, 255, 255)
-    doc.setFontSize(5.8)
+    doc.setFontSize(8)
+    doc.setFont('helvetica', 'normal')
     doc.text(
       '19A, DHULESHWAR GARDEN, AJMER ROAD, JAIPUR - 302001, RAJASTHAN (INDIA)  Ph.: +91 141 4110060/61,  TOLL-FREE: 1800 1200 1200',
-      W / 2, H - 2.5, { align: 'center' }
+      W / 2, H - 5, { align: 'center' }
     )
   }
 }
@@ -83,85 +81,104 @@ export async function downloadStatementPDF(transactions, period) {
   const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' })
   const W = doc.internal.pageSize.getWidth()
 
-  // 1. Purple header - taller to match screenshot
-  const headerH = 18
+  // ── 1. Purple header ──────────────────────────────────────────
+  const headerH = 20  
   doc.setFillColor(109, 39, 109)
   doc.rect(0, 0, W, headerH, 'F')
   doc.setTextColor(255, 255, 255)
-  doc.setFontSize(16)
+  doc.setFontSize(20)
   doc.setFont('helvetica', 'bold')
-  doc.text('ACCOUNT STATEMENT', 8, headerH / 2 + 3)
+  doc.text('ACCOUNT STATEMENT', 12, 12)
 
-  // Logo from asset - SVG ratio 68.27:30.1 = 2.268
-  // Fit logo height = headerH, width proportional
-  const logoH = headerH
+  const logoH = 12
   const logoW = parseFloat((logoH * (68.27 / 30.1)).toFixed(1))
-  const logoBase64 = await loadImageAsBase64(pdfLogoUrl, Math.round(logoW * 12), Math.round(logoH * 12))
+  const logoBase64 = await loadLogoOnPurple(pdfLogoUrl, Math.round(logoW * 10), Math.round(logoH * 10))
   if (logoBase64) {
-    doc.addImage(logoBase64, 'PNG', W - logoW, 0, logoW, logoH)
+    doc.addImage(logoBase64, 'PNG', W - logoW - 12, (headerH - logoH) / 2, logoW, logoH)
   }
 
-  // 2. Info grid
-  const lx = 10, lv = 38, rx = 110, rv = 145
+  // ── 2. Info grid ──────────────────────────────────────────────
+  const lx = 12, lv = 52, rx = 118, rv = 158
+  const FS = 9
+  const ROW = 8
 
-  function label(text, x, y) {
-    doc.setTextColor(120, 120, 120)
+  function lbl(text, x, y) {
     doc.setFont('helvetica', 'normal')
-    doc.setFontSize(8.5)
+    doc.setFontSize(FS)
+    doc.setTextColor(130, 130, 130)
     doc.text(text, x, y)
   }
-  function val(text, x, y, maxW = 55) {
-    doc.setTextColor(30, 30, 30)
-    doc.setFont('helvetica', 'normal')
-    doc.setFontSize(8.5)
+  function v(text, x, y, maxW = 50) {
+    doc.setFont('helvetica', 'bold')
+    doc.setFontSize(FS)
+    doc.setTextColor(25, 25, 25)
     const lines = doc.splitTextToSize(String(text), maxW)
     doc.text(lines, x, y)
     return lines.length
   }
-  function colon(x, y) {
-    doc.setTextColor(80, 80, 80)
-    doc.setFontSize(8.5)
-    doc.text(':', x - 4, y)
+  function col(x, y) {
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(FS)
+    doc.setTextColor(130, 130, 130)
+    doc.text(':', x - 5, y)
   }
 
-  let y = headerH + 8
-  label('Name', lx, y);          colon(lv, y); val(accountInfo.accountHolder, lv, y)
-  label('Account Number', rx, y); colon(rv, y); val(accountInfo.accountNumber, rv, y)
-  y += 6
-  label('Customer ID', lx, y);   colon(lv, y); val('41701754', lv, y)
-  label('Account Type', rx, y);  colon(rv, y); val('AU Salary Account-Value', rv, y)
-  y += 6
-  label('Customer Type', lx, y); colon(lv, y); val('Individual - Full KYC', lv, y)
-  label('Branch', rx, y);        colon(rv, y); val('Wakad Pune', rv, y)
-  y += 6
-  label('Address', lx, y); colon(lv, y)
-  const addrLines = val('E 102, Lakshadeep Palace, Near Hdfc Bank\nPune City - 411027, Maharashtra - India', lv, y, 55)
-  label('IFSC', rx, y);    colon(rv, y); val('AUBL0002630', rv, y)
-  y += 5
-  label('Nominee', rx, y); colon(rv, y); val('Not Registered', rv, y)
-  y += addrLines > 2 ? 8 : 6
+  let y = headerH + 12
 
-  doc.setDrawColor(210, 210, 210)
-  doc.line(lx, y, W - 10, y)
-  y += 5
-
-  const today = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
-  label('Statement Date', lx, y);       colon(lv, y); val(today, lv, y)
-  label('Opening Balance(\u20b9)', rx, y); colon(rv, y); val('0.00', rv, y)
-  y += 6
-  label('Statement Period', lx, y); colon(lv, y)
-  doc.setTextColor(232, 84, 10)
+  // Row 1: Name | Account Number
+  lbl('Name', lx, y); col(lv, y)
   doc.setFont('helvetica', 'bold')
-  doc.setFontSize(8.5)
-  doc.text(period, lv, y)
-  label('Closing Balance(\u20b9)', rx, y); colon(rv, y)
-  const closing = transactions.length > 0
-    ? (transactions[transactions.length - 1].runningBalance || '0.00').replace('\u20b9', '')
-    : '0.00'
-  val(closing, rv, y)
-  y += 10
+  doc.setFontSize(FS)
+  doc.setTextColor(25, 25, 25)
+  doc.text(accountInfo.accountHolder, lv, y)
+  lbl('Account Number', rx, y); col(rv, y); v(accountInfo.accountNumber, rv, y)
+  y += ROW
 
-  // 3. Transaction table
+  // Row 2: Customer ID | Account Type
+  lbl('Customer ID', lx, y);  col(lv, y); v('41701754', lv, y)
+  lbl('Account Type', rx, y); col(rv, y); v('AU Salary Account-Value', rv, y)
+  y += ROW
+
+  // Row 3: Customer Type | Branch
+  lbl('Customer Type', lx, y); col(lv, y); v('Individual - Full KYC', lv, y)
+  lbl('Branch', rx, y); col(rv, y); v('Wakad Pune', rv, y)
+  y += ROW
+
+  // Row 4: Address | IFSC + Nominee
+  const addrY = y
+  lbl('Address', lx, addrY); col(lv, addrY)
+  const addrLineCount = v(
+    'E 102, Lakshadeep Palace, Near Hdfc Bank\nPune City - 411027, Maharashtra - India',
+    lv, addrY, 52
+  )
+  lbl('IFSC',    rx, addrY);       col(rv, addrY);       v('AUBL0002630', rv, addrY)
+  lbl('Nominee', rx, addrY + ROW); col(rv, addrY + ROW); v('Not Registered', rv, addrY + ROW)
+
+  const addrBottom = addrY + addrLineCount * 5
+  const rightBottom = addrY + ROW * 2 + 6
+  y = Math.max(addrBottom, rightBottom) + 1
+
+  // Statement Date | Opening Balance
+  const today = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
+  lbl('Statement Date', lx, y);   col(lv, y); v(today, lv, y)
+  lbl('Opening Balance', rx, y);  col(rv, y); v('0.00', rv, y)
+  y += ROW
+
+  // Statement Period | Closing Balance
+  lbl('Statement Period', lx, y); col(lv, y)
+  doc.setFont('helvetica', 'bold')
+  doc.setFontSize(FS)
+  doc.setTextColor(25, 25, 25)
+  doc.text(period, lv, y)
+  lbl('Closing Balance', rx, y); col(rv, y)
+  const closing = transactions.length > 0
+    ? (transactions[transactions.length - 1].runningBalance || '0.00').replace('\u20b9', '').trim()
+    : '0.00'
+  doc.setTextColor(25, 25, 25)
+  v(closing, rv, y)
+  y += 8
+
+  // ── 3. Transaction table ──────────────────────────────────────
   const rows = transactions.map(tx => [
     tx.displayDate,
     tx.valueDate,
@@ -169,49 +186,64 @@ export async function downloadStatementPDF(transactions, period) {
     tx.chequeRef || '-',
     tx.type === 'debit'  ? tx.amount.replace('\u20b9', '') : '-',
     tx.type === 'credit' ? tx.amount.replace('\u20b9', '') : '-',
-    tx.runningBalance ? tx.runningBalance.replace('\u20b9', '') : '-',
+    tx.runningBalance    ? tx.runningBalance.replace('\u20b9', '') : '-',
   ])
 
   autoTable(doc, {
     startY: y,
-    head: [['Transaction\nDate', 'Value Date', 'Narration', 'Cheque/\nReference No.', 'Debit (\u20b9)', 'Credit (\u20b9)', 'Balance (\u20b9)']],
+    head: [['Transaction\nDate', 'Value Date', 'Description/Narration', 'Cheque/\nReference No.', 'Debit', 'Credit', 'Balance']],
     body: rows,
     styles: {
-      fontSize: 7,
-      cellPadding: { top: 3, bottom: 3, left: 2, right: 2 },
+      fontSize: 9,
+      font: 'helvetica',
+      cellPadding: { top: 1, bottom: 1, left: 1, right: 0.5 },
       textColor: [40, 40, 40],
-      lineColor: [220, 220, 220],
-      lineWidth: 0.2,
+      lineColor: [200, 200, 200],
+      lineWidth: 0.25,
       valign: 'top',
     },
     headStyles: {
-      fillColor: [255, 255, 255],
-      textColor: [40, 40, 40],
+      fillColor: [235, 235, 235],
+      textColor: [30, 30, 30],
+      font: 'helvetica',
       fontStyle: 'bold',
-      fontSize: 7.5,
-      lineColor: [180, 180, 180],
+      fontSize: 8,
+      lineColor: [200, 200, 200],
       lineWidth: 0.3,
+      halign: 'center',
+      valign: 'middle',
+      cellPadding: { top: 2.5, bottom: 2.5, left: 3, right: 3 },
     },
-    alternateRowStyles: { fillColor: [253, 245, 245] },
+    alternateRowStyles: { fillColor: [255, 255, 255] },
     columnStyles: {
-      0: { cellWidth: 20 },
-      1: { cellWidth: 20 },
-      2: { cellWidth: 58 },
-      3: { cellWidth: 35 },
-      4: { cellWidth: 18, halign: 'right' },
-      5: { cellWidth: 18, halign: 'right' },
-      6: { cellWidth: 18, halign: 'right' },
+      0: { cellWidth: 22, halign: 'center' },
+      1: { cellWidth: 22, halign: 'center' },
+      2: { cellWidth: 45 },
+      3: { cellWidth: 40 },
+      4: { cellWidth: 22, halign: 'right', valign: 'top', cellPadding: { top: 3, bottom: 1.5, left: 2, right: 2 } },
+      5: { cellWidth: 22, halign: 'right', valign: 'top', cellPadding: { top: 3, bottom: 1.5, left: 2, right: 2 } },
+      6: { cellWidth: 22, halign: 'right', valign: 'top', cellPadding: { top: 3, bottom: 1.5, left: 2, right: 2 } },
     },
-    margin: { left: 7, right: 7, bottom: 40 },
-    didParseCell(data) {
-      if (data.section === 'body') {
-        if (data.column.index === 4 && data.cell.raw !== '-') data.cell.styles.textColor = [180, 0, 0]
-        if (data.column.index === 5 && data.cell.raw !== '-') data.cell.styles.textColor = [0, 140, 0]
-      }
-    },
+    margin: { left: 7, right: 7, top: headerH + 4, bottom: 55 },
+    tableWidth: 'fixed',
   })
 
-  // 4. Footer on every page
+  // ── 4. Header on every page ───────────────────────────────────
+  const totalPages = doc.internal.getNumberOfPages()
+  for (let i = 2; i <= totalPages; i++) {
+    doc.setPage(i)
+    doc.setFillColor(109, 39, 109)
+    doc.rect(0, 0, W, headerH, 'F')
+    doc.setTextColor(255, 255, 255)
+    doc.setFontSize(20)
+    doc.setFont('helvetica', 'bold')
+    doc.text('ACCOUNT STATEMENT', 12, 12)
+    if (logoBase64) {
+      doc.addImage(logoBase64, 'PNG', W - logoW - 12, (headerH - logoH) / 2, logoW, logoH)
+    }
+  }
+  doc.setPage(1)
+
   addFooter(doc)
 
   doc.save(`Account_Statement_${accountInfo.accountNumber}.pdf`)
