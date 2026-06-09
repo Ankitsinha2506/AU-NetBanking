@@ -3,10 +3,18 @@
 // Edit this file to manage all transactions
 // shown in the Account Statement page
 // ─────────────────────────────────────────────
+import userProfile from '../core/constants/userProfile'
 
 export const accountInfo = {
-  accountNumber: '2601235010788507',
-  accountHolder: 'Keshav Pralhad Golande',
+  accountNumber: userProfile.accountNumber,
+  accountHolder: userProfile.name,
+  accountType: userProfile.accountType,
+  customerType: userProfile.customerType,
+  branch: userProfile.branch,
+  ifsc: userProfile.ifsc,
+  nominee: userProfile.nominee,
+  customerId: userProfile.username,
+  address: `${userProfile.communicationAddress.line1}, ${userProfile.communicationAddress.line2}, Near Hdfc Bank\n${userProfile.communicationAddress.city} - ${userProfile.communicationAddress.pincode}, ${userProfile.communicationAddress.state} - India`,
 }
 
 // Add / edit / remove transactions here
