@@ -25,6 +25,12 @@ const userProfile = {
     state: 'MAHARASHTRA',
     pincode: '411027',
   },
+  accountNumber: '************8467',
+  accountType: 'AU Salary Account-Value',
+  customerType: 'Individual - Full KYC',
+  branch: 'Wakad Pune',
+  ifsc: 'AUBL0002630',
+  nominee: 'Not Registered',
   annualIncome: '2.5 Lakh - 5 Lakh',
   profileComplete: 83,
 }

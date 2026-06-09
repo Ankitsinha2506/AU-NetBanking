@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ROUTES } from '../core/constants/routes.constant'
+import userProfile from '../core/constants/userProfile'
 import auLogo from '../assets/Login Logo/aulogo_new.befc8eb34f4c700d.svg'
 import accountsIcon from '../assets/Accountslogo/accounts_fill_icon.3bd345409f8966ec.svg'
 import arrowLeftIcon from '../assets/Accountslogo/arrow-left.svg'
@@ -19,21 +20,23 @@ const rightLinks = [
   'View Account Statement',
 ]
 
+const { communicationAddress: addr } = userProfile
+
 const fields = [
-  { label: 'Name', value: 'Keshav Pralhad Golande', col: 1 },
-  { label: 'Branch Name & City', value: 'Wakad Pune - Pune', col: 2 },
-  { label: 'Account Number', value: '2601235010788507', col: 1 },
-  { label: 'IFSC Code', value: 'AUBL0002630', col: 2 },
+  { label: 'Name', value: userProfile.name, col: 1 },
+  { label: 'Branch Name & City', value: `${userProfile.branch} - ${addr.city}`, col: 2 },
+  { label: 'Account Number', value: userProfile.accountNumber, col: 1 },
+  { label: 'IFSC Code', value: userProfile.ifsc, col: 2 },
   { label: 'Virtual Payment Address', value: 'keshav11428800@aubank', col: 1 },
   { label: 'Swift Code', value: 'AUBLINBBXXX', col: 2 },
 ]
 
 const singleFields = [
-  { label: 'Account Type', value: 'AU Salary Account-Value' },
-  { label: 'Customer ID', value: '41701754' },
+  { label: 'Account Type', value: userProfile.accountType },
+  { label: 'Customer ID', value: userProfile.username },
   { label: 'Nickname', value: null, action: 'Add' },
   { label: 'Status', value: 'Account Open Regular' },
-  { label: 'Account Nominee', value: null, action: 'Add Nominee' },
+  { label: 'Account Nominee', value: userProfile.nominee !== 'Not Registered' ? userProfile.nominee : null, action: userProfile.nominee === 'Not Registered' ? 'Add Nominee' : null },
   { label: 'Holding Type', value: 'Sole Owner' },
 ]
 
