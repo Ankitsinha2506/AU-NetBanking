@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="93" height="22" viewBox="0 0 93 22">
+  <defs>
+    <clipPath id="clip-img_appstore">
+      <rect width="93" height="22"/>
+    </clipPath>
+  </defs>
+  <g id="img_appstore" clip-path="url(#clip-img_appstore)">
+    <rect width="93" height="22" fill="#fff"/>
+    <g id="Group_2" data-name="Group 2" transform="translate(-1128 -989)">
+      <text id="App_Store" data-name="App Store" transform="translate(1155 1005)" fill="#9b9b9b" font-size="14" font-family="Quicksand-Medium, Quicksand" font-weight="500"><tspan x="0" y="0">App Store</tspan></text>
+      <path id="Combined-Shape" d="M10,20A10,10,0,1,1,20,10,10.011,10.011,0,0,1,10,20ZM11.612,7.543h0L10.461,9.529,13.922,15.5a.992.992,0,0,0,.606.464,1.034,1.034,0,0,0,.26.034,1,1,0,0,0,.961-.738.982.982,0,0,0-.1-.752l-.656-1.133h.81a.993.993,0,1,0,0-1.986H13.842l-2.23-3.847ZM4.547,14.171l-.2.338A.994.994,0,0,0,5.212,16a1,1,0,0,0,.866-.5l.771-1.331ZM4.2,11.39a.993.993,0,1,0,0,1.986h7.573L10.618,11.39H8.461l3.419-5.9a.991.991,0,0,0-.365-1.357,1,1,0,0,0-1.362.364L10,4.761,9.847,4.5a1,1,0,0,0-1.363-.364A.992.992,0,0,0,8.12,5.49l.729,1.258L6.159,11.39Z" transform="translate(1130 990)" fill="#9b9b9b"/>
+    </g>
+  </g>
+</svg>

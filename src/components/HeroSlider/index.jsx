@@ -27,7 +27,6 @@ const slides = [
     desc: "Know more about AU's journey",
     buttons: [{ label: "Click Here", primary: true }],
     banner: "Up to 6.75%* p.a. interest on your Savings Account",
-    quote: true,
   },
   {
     image: eight,
@@ -75,7 +74,7 @@ const slides = [
   },
   {
     image: seven,
-    title: 'A call. A threat. A “digital arrest.”',
+    title: 'A call. A threat. A "digital arrest."',
     desc: "Fraudsters are impersonating authorities to scam you. Watch RBI's awareness films to know the signs.",
     buttons: [{ label: "Watch now", primary: true }],
     banner: "Monthly interest payment on Savings Account",
@@ -94,9 +93,21 @@ const slides = [
 
 export default function HeroSlider() {
   const [current, setCurrent] = useState(0);
+  const [prev2, setPrev2] = useState(null);
+  const [direction, setDirection] = useState("next");
+  const [animating, setAnimating] = useState(false);
 
-  const next = useCallback(() => setCurrent((p) => (p + 1) % slides.length), []);
-  const prev = () => setCurrent((p) => (p - 1 + slides.length) % slides.length);
+  const goTo = useCallback((idx, dir) => {
+    if (animating) return;
+    setPrev2(current);
+    setDirection(dir);
+    setAnimating(true);
+    setCurrent(idx);
+    setTimeout(() => { setPrev2(null); setAnimating(false); }, 500);
+  }, [animating, current]);
+
+  const next = useCallback(() => goTo((current + 1) % slides.length, "next"), [goTo, current]);
+  const prev = useCallback(() => goTo((current - 1 + slides.length) % slides.length, "prev"), [goTo, current]);
 
   useEffect(() => {
     const t = setInterval(next, 4000);
@@ -118,7 +129,7 @@ export default function HeroSlider() {
       </div>
 
       {/* Slider outer */}
-      <div className="max-w-[1200px] mx-auto px-8 md:px-14 pb-0 relative">
+      <div className="max-w-[1600px] mx-auto px-4 md:px-6 pb-0 relative">
 
         {/* Left Arrow */}
         <button
@@ -139,35 +150,30 @@ export default function HeroSlider() {
         </button>
 
         {/* Slide container */}
-        <div className="relative rounded-2xl overflow-hidden">
+        <div className="relative rounded-2xl overflow-hidden" style={{ height: "clamp(220px, 40vw, 480px)" }}>
+          {/* Outgoing slide */}
+          {prev2 !== null && (
+            <img
+              src={slides[prev2].image}
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover"
+              style={{ animation: `slideOut${direction === "next" ? "Left" : "Right"} 0.5s ease forwards` }}
+            />
+          )}
+          {/* Incoming slide */}
           <img
             key={current}
-            src={slide.image}
+            src={slides[current].image}
             alt={slide.title}
-            className="w-full object-cover"
-            style={{ height: "clamp(220px, 40vw, 480px)" }}
+            className="absolute inset-0 w-full h-full object-cover"
+            style={{
+              animation: animating
+                ? `slideIn${direction === "next" ? "Right" : "Left"} 0.5s ease forwards`
+                : "none",
+            }}
           />
 
-          {/* Quote overlay — Forever Banking only */}
-          {slide.quote && (
-            <div className="absolute top-1/2 right-14 -translate-y-[55%] w-[400px]">
-              <div className="text-[#c4a882] text-6xl font-serif leading-none ml-4 mb-[-18px] relative z-10">"</div>
-              <div className="border border-[#c4a882] rounded-2xl px-8 py-6">
-                <p className="text-[20px] text-gray-800 leading-snug">
-                  <span className="font-bold text-[#4B1A6B]">Customer service</span> is the{" "}
-                  <em>most important product</em> of the Bank
-                </p>
-              </div>
-              <div className="text-[#c4a882] text-6xl font-serif leading-none text-right mr-4 mt-[-10px]">"</div>
-              <div className="mt-3 ml-1">
-                <p className="font-bold text-gray-900 text-base">Mr. Sanjay Agarwal</p>
-                <p className="text-sm text-gray-600">Founder, MD & CEO</p>
-                <p className="text-sm text-gray-600">AU Small Finance Bank</p>
-              </div>
-            </div>
-          )}
-
-          {/* Info Card — hidden on very small, responsive size */}
+          {/* Info Card */}
           <div
             className="hidden sm:block absolute left-4 md:left-8 bg-white rounded-2xl shadow-xl z-10"
             style={{ bottom: "48px", width: "clamp(220px, 28vw, 340px)", padding: "16px 20px" }}
@@ -199,12 +205,12 @@ export default function HeroSlider() {
             </div>
           </div>
 
-          {/* Dots — bottom center, inside image */}
+          {/* Dots */}
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 z-10">
             {slides.map((_, i) => (
               <button
                 key={i}
-                onClick={() => setCurrent(i)}
+                onClick={() => goTo(i, i > current ? "next" : "prev")}
                 className="rounded-full transition-all"
                 style={{
                   width: i === current ? "22px" : "8px",
@@ -215,7 +221,6 @@ export default function HeroSlider() {
             ))}
           </div>
         </div>
-
       </div>
 
       {/* Quick Actions */}
@@ -240,7 +245,7 @@ export default function HeroSlider() {
         </div>
       </div>
 
-      {/* Floating side buttons — hidden on mobile */}
+      {/* Floating side buttons */}
       <div className="hidden md:flex fixed right-4 bottom-8 flex-col gap-3 z-50">
         <button className="w-12 h-12 rounded-full flex items-center justify-center shadow-xl text-white font-bold text-lg"
           style={{ backgroundColor: "#4B1A6B" }}>⚡</button>
