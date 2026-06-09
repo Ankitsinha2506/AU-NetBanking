@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { accountInfo, getTransactionsByPeriod } from '../data/transactions'
+import { downloadStatementPDF } from '../data/generatePDF'
 import auLogo from '../assets/Login Logo/aulogo_new.befc8eb34f4c700d.svg'
 import accountsIcon from '../assets/Accountslogo/accounts_fill_icon.3bd345409f8966ec.svg'
 import arrowLeftIcon from '../assets/Accountslogo/arrow-left.svg'
@@ -100,7 +101,7 @@ export default function AccountStatement() {
                 <div className="border border-gray-200 rounded-xl px-6 py-5 mb-6">
                   <p className="text-gray-400 text-[13px] mb-4">Action on account statement</p>
                   <div className="flex items-center gap-10">
-                    <button className="flex items-center gap-2 text-orange-500 text-[14px] font-semibold hover:opacity-80">
+                    <button onClick={() => downloadStatementPDF(filtered, activeTab)} className="flex items-center gap-2 text-orange-500 text-[14px] font-semibold hover:opacity-80">
                       <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#E8540A" strokeWidth="2">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3" />
                       </svg>
@@ -194,7 +195,7 @@ export default function AccountStatement() {
                           </svg>
                           Email
                         </button>
-                        <button className="flex items-center gap-2 text-orange-500 text-[14px] font-semibold hover:opacity-80">
+                        <button onClick={() => downloadStatementPDF(filtered, `${customFrom} to ${customTo}`)} className="flex items-center gap-2 text-orange-500 text-[14px] font-semibold hover:opacity-80">
                           <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#E8540A" strokeWidth="2">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3" />
                           </svg>
