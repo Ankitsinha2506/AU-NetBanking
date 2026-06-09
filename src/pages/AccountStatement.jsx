@@ -52,6 +52,17 @@ export default function AccountStatement() {
   const [txFilter, setTxFilter] = useState('All')
   const [showCustomTable, setShowCustomTable] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [animKey, setAnimKey] = useState(0)
+  const [slideDir, setSlideDir] = useState('right')
+
+  function handleTabChange(tab) {
+    const oldIdx = tabs.indexOf(activeTab)
+    const newIdx = tabs.indexOf(tab)
+    setSlideDir(newIdx > oldIdx ? 'right' : 'left')
+    setAnimKey(k => k + 1)
+    setActiveTab(tab)
+    setShowCustomTable(false)
+  }
 
   const filtered = getTransactionsByPeriod(activeTab, customFrom, customTo).filter(tx => {
     if (txFilter === 'All') return true
@@ -94,7 +105,7 @@ export default function AccountStatement() {
 
           {/* Left */}
           <div className="flex-1">
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm px-7 py-6">
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm px-7 py-6" style={{overflow:'hidden'}}>
 
               {/* Account number */}
               <div className="mb-5">
@@ -109,7 +120,7 @@ export default function AccountStatement() {
                 {tabs.map(tab => (
                   <button
                     key={tab}
-                    onClick={() => setActiveTab(tab)}
+                    onClick={() => handleTabChange(tab)}
                     className={`pb-3 text-[14px] font-medium whitespace-nowrap transition-colors ${
                       activeTab === tab
                         ? 'border-b-2 border-orange-500 text-orange-500'
@@ -242,7 +253,7 @@ export default function AccountStatement() {
               )}
 
               {(activeTab !== 'Custom period' || showCustomTable) && (
-                <div>
+                <div key={animKey} style={{ animation: `${slideDir === 'right' ? 'slideFromRight' : 'slideFromLeft'} 0.3s ease` }}>
                   {/* Table Header */}
                   <div className="grid grid-cols-[1fr_1.2fr_1.8fr_1fr_1.2fr_0.5fr] gap-2 pb-3 border-b border-gray-200 text-gray-400 text-[13px] px-2">
                     <span>Date</span>
@@ -265,17 +276,15 @@ export default function AccountStatement() {
                   ) : (
                     filtered.map((tx, idx) => (
                       <div key={tx.id}
-                        className={`grid grid-cols-[1fr_1.2fr_1.8fr_1fr_1.2fr_0.5fr] gap-2 py-5 border-b border-gray-100 text-[13px] items-start px-2 ${
-                          idx % 2 === 1 ? 'bg-gray-50' : 'bg-white'
-                        }`}
+                        className="grid grid-cols-[1fr_1.2fr_1.8fr_1fr_1.2fr_0.5fr] gap-2 py-6 border-b border-gray-100 items-center px-2 bg-white"
                       >
-                        <span className="text-gray-700">{tx.displayDate}</span>
-                        <span className={`font-semibold ${tx.type === 'credit' ? 'text-green-600' : 'text-red-500'}`}>
-                          {tx.type === 'credit' ? '+ ' : '- '}{tx.amount}
+                        <span className="text-gray-600 text-[14px]">{tx.displayDate}</span>
+                        <span style={{ color: tx.type === 'credit' ? '#3fa96b' : '#352f2f', fontWeight: '700', fontSize: '14px' }}>
+                          {tx.type === 'credit' ? '+ ₹' : '- ₹'}{tx.amount.replace('₹', '')}
                         </span>
-                        <span className="text-gray-600 leading-snug">{tx.narration}</span>
-                        <span className="text-gray-700">{tx.valueDate}</span>
-                        <span className="text-gray-700">{tx.runningBalance || ''}</span>
+                        <span className="text-gray-500 text-[13px] leading-snug">{tx.narration}</span>
+                        <span className="text-gray-600 text-[14px]">{tx.valueDate}</span>
+                        <span className="text-gray-700 text-[14px]">{tx.runningBalance || ''}</span>
                         <span><img src={arrowRightIcon} alt="" className="w-4 h-4" style={{ filter: 'invert(55%) sepia(90%) saturate(500%) hue-rotate(10deg)' }} /></span>
                       </div>
                     ))
