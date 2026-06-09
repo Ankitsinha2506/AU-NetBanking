@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ROUTES } from '../core/constants/routes.constant'
+import userProfile from '../core/constants/userProfile'
 import auLogo from '../assets/Login Logo/aulogo_new.befc8eb34f4c700d.svg'
 import accountsIcon from '../assets/Accountslogo/accounts_fill_icon.3bd345409f8966ec.svg'
 import arrowLeftIcon from '../assets/Accountslogo/arrow-left.svg'
@@ -70,8 +71,8 @@ export default function Accounts() {
             {/* Account card */}
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm px-7 py-6 flex flex-col sm:flex-row justify-between gap-4">
               <div>
-                <p className="text-gray-400 text-[13px] mb-1">Keshav Pralhad Golande</p>
-                <p className=" text-gray-900 text-[16px] mb-3">2601235010788507</p>
+                <p className="text-gray-400 text-[13px] mb-1">{userProfile.name}</p>
+                <p className=" text-gray-900 text-[16px] mb-3">{userProfile.accountNumber}</p>
                 <button onClick={() => navigate(ROUTES.ACCOUNT_DETAILS)} className="text-orange-500 text-[13px] font-medium hover:underline">Account Details</button>
               </div>
               <div className="text-right">
@@ -79,7 +80,7 @@ export default function Accounts() {
                   <span className="text-gray-400 text-[13px]">Withdrawable balance</span>
                   <img src={infoIcon} alt="info" className="w-[15px] h-[15px]" />
                 </div>
-                <p className="font-bold text-gray-900 text-[24px] mb-3">₹0.00</p>
+                <p className="font-bold text-gray-900 text-[24px] mb-3">₹{userProfile.savingsBalance}</p>
                 <button className="text-orange-500 text-[13px] font-medium hover:underline">View Breakup</button>
               </div>
             </div>

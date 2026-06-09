@@ -135,24 +135,21 @@ export async function downloadStatementPDF(transactions, period, balances = {}) 
   y += ROW
 
   // Row 2: Customer ID | Account Type
-  lbl('Customer ID', lx, y);  col(lv, y); v('41701754', lv, y)
-  lbl('Account Type', rx, y); col(rv, y); v('AU Salary Account-Value', rv, y)
+  lbl('Customer ID', lx, y);  col(lv, y); v(accountInfo.customerId, lv, y)
+  lbl('Account Type', rx, y); col(rv, y); v(accountInfo.accountType, rv, y)
   y += ROW
 
   // Row 3: Customer Type | Branch
-  lbl('Customer Type', lx, y); col(lv, y); v('Individual - Full KYC', lv, y)
-  lbl('Branch', rx, y); col(rv, y); v('Wakad Pune', rv, y)
+  lbl('Customer Type', lx, y); col(lv, y); v(accountInfo.customerType, lv, y)
+  lbl('Branch', rx, y); col(rv, y); v(accountInfo.branch, rv, y)
   y += ROW
 
   // Row 4: Address | IFSC + Nominee
   const addrY = y
   lbl('Address', lx, addrY); col(lv, addrY)
-  const addrLineCount = v(
-    'E 102, Lakshadeep Palace, Near Hdfc Bank\nPune City - 411027, Maharashtra - India',
-    lv, addrY, 52
-  )
-  lbl('IFSC',    rx, addrY);       col(rv, addrY);       v('AUBL0002630', rv, addrY)
-  lbl('Nominee', rx, addrY + ROW); col(rv, addrY + ROW); v('Not Registered', rv, addrY + ROW)
+  const addrLineCount = v(accountInfo.address, lv, addrY, 52)
+  lbl('IFSC',    rx, addrY);       col(rv, addrY);       v(accountInfo.ifsc, rv, addrY)
+  lbl('Nominee', rx, addrY + ROW); col(rv, addrY + ROW); v(accountInfo.nominee, rv, addrY + ROW)
 
   const addrBottom = addrY + addrLineCount * 5
   const rightBottom = addrY + ROW * 2 + 6
@@ -161,7 +158,7 @@ export async function downloadStatementPDF(transactions, period, balances = {}) 
   // Statement Date | Opening Balance
   const today = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
   lbl('Statement Date', lx, y);   col(lv, y); v(today, lv, y)
-  lbl('Opening Balance', rx, y);  col(rv, y); v('0.00', rv, y)
+  lbl('Opening Balance(Rs)', rx, y);  col(rv, y); v('0.00', rv, y)
   y += ROW
 
   // Statement Period | Closing Balance
@@ -170,7 +167,7 @@ export async function downloadStatementPDF(transactions, period, balances = {}) 
   doc.setFontSize(FS)
   doc.setTextColor(25, 25, 25)
   doc.text(period, lv, y)
-  lbl('Closing Balance', rx, y); col(rv, y)
+  lbl('Closing Balance(Rs)', rx, y); col(rv, y)
   const closing = transactions.length > 0
     ? (balances[transactions[transactions.length - 1].id] || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })
     : '0.00'
@@ -191,7 +188,7 @@ export async function downloadStatementPDF(transactions, period, balances = {}) 
 
   autoTable(doc, {
     startY: y,
-    head: [['Transaction\nDate', 'Value Date', 'Description/Narration', 'Cheque/\nReference No.', 'Debit', 'Credit', 'Balance']],
+    head: [['Transaction\nDate', 'Value Date', 'Description/Narration', 'Cheque/\nReference No.', 'Debit(Rs)', 'Credit(Rs)', 'Balance(Rs)']],
     body: rows,
     styles: {
       fontSize: 9,
