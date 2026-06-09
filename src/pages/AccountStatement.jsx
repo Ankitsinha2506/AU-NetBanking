@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { ROUTES } from '../core/constants/routes.constant'
 import { accountInfo, getTransactionsByPeriod } from '../data/transactions'
 import { downloadStatementPDF } from '../data/generatePDF'
 import auLogo from '../assets/Login Logo/aulogo_new.befc8eb34f4c700d.svg'
@@ -9,6 +10,7 @@ import arrowRightIcon from '../assets/Accountslogo/arrow-right.864d48a943e4093e.
 import logoutIcon from '../assets/Accountslogo/logout_icon.5d5e9878efc65da8.svg'
 import searchIcon from '../assets/homepage/search-icon.svg'
 import LFooter from '../components/LFooter'
+import SideMenu from '../components/SideMenu'
 
 const tabs = ['Current Month', 'Last Month', 'Last 3 Month', 'Custom period']
 
@@ -49,6 +51,7 @@ export default function AccountStatement() {
   const [customTo, setCustomTo] = useState('')
   const [txFilter, setTxFilter] = useState('All')
   const [showCustomTable, setShowCustomTable] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
 
   const filtered = getTransactionsByPeriod(activeTab, customFrom, customTo).filter(tx => {
     if (txFilter === 'All') return true
@@ -57,11 +60,12 @@ export default function AccountStatement() {
 
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#fdf0f0' }}>
+      {menuOpen && <SideMenu onClose={() => setMenuOpen(false)} />}
 
       {/* Navbar */}
       <header className="bg-white border-b border-gray-200 px-6 h-[60px] flex items-center justify-between sticky top-0 z-40">
         <div className="flex items-center gap-4">
-          <button className="text-gray-500 text-[22px]">☰</button>
+          <button onClick={() => setMenuOpen(true)} className="text-gray-500 text-[22px]">☰</button>
           <img src={auLogo} alt="AU Bank" className="h-9" />
         </div>
         <div className="flex items-center gap-2">
@@ -295,6 +299,10 @@ export default function AccountStatement() {
             {rightLinks.map((link) => (
               <button
                 key={link}
+                onClick={() => {
+                  if (link === 'Account Summary') navigate(ROUTES.ACCOUNTS)
+                  if (link === 'View Account Statement') navigate(ROUTES.ACCOUNT_STATEMENT)
+                }}
                 className="bg-white rounded-2xl border border-gray-100 shadow-sm px-6 py-4 flex items-center justify-between hover:border-[#5c3d8f] transition-colors"
               >
                 <span className="text-gray-700 text-[14px]">{link}</span>
