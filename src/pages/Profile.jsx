@@ -4,6 +4,7 @@ import auLogo from '../assets/Main homepage/aulogo.png'
 import arrowLeftIcon from '../assets/Accountslogo/arrow-left.svg'
 import LFooter from '../components/LFooter'
 import userProfile from '../core/constants/userProfile'
+import SideMenu from '../components/SideMenu'
 
 function Field({ label, value, action }) {
   return (
@@ -52,14 +53,16 @@ export default function Profile() {
   const p = userProfile
   const [income, setIncome] = useState(p.annualIncome)
   const [dropdownOpen, setDropdownOpen] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
 
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#fdf0f0' }}>
+      {menuOpen && <SideMenu onClose={() => setMenuOpen(false)} />}
 
       {/* Navbar */}
       <header className="bg-white border-b border-gray-200 px-6 h-[65px] flex items-center justify-between sticky top-0 z-40">
         <div className="flex items-center gap-4">
-          <button className="text-gray-500 text-[22px]">☰</button>
+          <button onClick={() => setMenuOpen(true)} className="text-gray-500 text-[22px]">☰</button>
           <img src={auLogo} alt="AU Bank" className="h-9" />
         </div>
         <span className="text-[18px] font-semibold text-[#5c3d8f]">Profile</span>
