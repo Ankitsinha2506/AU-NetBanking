@@ -129,7 +129,7 @@ export default function HeroSlider() {
       </div>
 
       {/* Slider outer */}
-      <div className="max-w-[1600px] mx-auto px-4 md:px-6 pb-0 relative">
+      <div className="max-w-[1300px] mx-auto px-4 md:px-6 pb-0 relative">
 
         {/* Left Arrow */}
         <button

@@ -77,7 +77,7 @@ function addFooter(doc) {
   }
 }
 
-export async function downloadStatementPDF(transactions, period) {
+export async function downloadStatementPDF(transactions, period, balances = {}) {
   const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' })
   const W = doc.internal.pageSize.getWidth()
 
@@ -169,7 +169,7 @@ export async function downloadStatementPDF(transactions, period) {
   doc.text(period, lv, y)
   lbl('Closing Balance(Rs)', rx, y); col(rv, y)
   const closing = transactions.length > 0
-    ? (transactions[transactions.length - 1].runningBalance || '0.00').replace('\u20b9', '').trim()
+    ? (balances[transactions[transactions.length - 1].id] || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })
     : '0.00'
   doc.setTextColor(25, 25, 25)
   v(closing, rv, y)
@@ -183,7 +183,7 @@ export async function downloadStatementPDF(transactions, period) {
     tx.chequeRef || '-',
     tx.type === 'debit'  ? tx.amount.replace('\u20b9', '') : '-',
     tx.type === 'credit' ? tx.amount.replace('\u20b9', '') : '-',
-    tx.runningBalance    ? tx.runningBalance.replace('\u20b9', '') : '-',
+    tx.runningBalance ? tx.runningBalance.replace('\u20b9', '') : (balances[tx.id] ? balances[tx.id].toLocaleString('en-IN', { minimumFractionDigits: 2 }) : '-'),
   ])
 
   autoTable(doc, {

@@ -67,7 +67,20 @@ export default function AccountStatement() {
   const filtered = getTransactionsByPeriod(activeTab, customFrom, customTo).filter(tx => {
     if (txFilter === 'All') return true
     return tx.type === txFilter.toLowerCase()
-  })
+  }).reverse()
+
+  function calcBalances(txList) {
+    const chron = [...txList].reverse()
+    let bal = 0
+    const balMap = {}
+    chron.forEach(tx => {
+      const amt = parseFloat(tx.amount.replace(/[₹,]/g, ''))
+      bal = tx.type === 'credit' ? bal + amt : bal - amt
+      balMap[tx.id] = bal
+    })
+    return balMap
+  }
+  const balances = calcBalances(filtered)
 
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#fdf0f0' }}>
@@ -137,7 +150,7 @@ export default function AccountStatement() {
                 <div className="border border-gray-200 rounded-xl px-6 py-5 mb-6">
                   <p className="text-gray-400 text-[13px] mb-4">Action on account statement</p>
                   <div className="flex items-center gap-10">
-                    <button onClick={() => downloadStatementPDF(filtered, resolvePeriodLabel(activeTab))} className="flex items-center gap-2 text-orange-500 text-[14px] font-semibold hover:opacity-80">
+                    <button onClick={() => downloadStatementPDF(filtered, resolvePeriodLabel(activeTab), balances)} className="flex items-center gap-2 text-orange-500 text-[14px] font-semibold hover:opacity-80">
                       <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#E8540A" strokeWidth="2">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3" />
                       </svg>
@@ -231,7 +244,7 @@ export default function AccountStatement() {
                           </svg>
                           Email
                         </button>
-                        <button onClick={() => downloadStatementPDF(filtered, `${customFrom} to ${customTo}`)} className="flex items-center gap-2 text-orange-500 text-[14px] font-semibold hover:opacity-80">
+                        <button onClick={() => downloadStatementPDF(filtered, `${customFrom} to ${customTo}`, balances)} className="flex items-center gap-2 text-orange-500 text-[14px] font-semibold hover:opacity-80">
                           <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#E8540A" strokeWidth="2">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3" />
                           </svg>
@@ -279,12 +292,12 @@ export default function AccountStatement() {
                         className="grid grid-cols-[1fr_1.2fr_1.8fr_1fr_1.2fr_0.5fr] gap-2 py-6 border-b border-gray-100 items-center px-2 bg-white"
                       >
                         <span className="text-gray-600 text-[14px]">{tx.displayDate}</span>
-                        <span style={{ color: tx.type === 'credit' ? '#3fa96b' : '#352f2f', fontWeight: '700', fontSize: '14px' }}>
+                        <span style={{ color: tx.type === 'credit' ? '#60bb81' : '#343333', fontWeight: '700', fontSize: '15px' }}>
                           {tx.type === 'credit' ? '+ ₹' : '- ₹'}{tx.amount.replace('₹', '')}
                         </span>
                         <span className="text-gray-500 text-[13px] leading-snug">{tx.narration}</span>
                         <span className="text-gray-600 text-[14px]">{tx.valueDate}</span>
-                        <span className="text-gray-700 text-[14px]">{tx.runningBalance || ''}</span>
+                        <span className="text-gray-700 text-[14px]">₹{balances[tx.id]?.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
                         <span><img src={arrowRightIcon} alt="" className="w-4 h-4" style={{ filter: 'invert(55%) sepia(90%) saturate(500%) hue-rotate(10deg)' }} /></span>
                       </div>
                     ))
