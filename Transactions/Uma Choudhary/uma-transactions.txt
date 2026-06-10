@@ -995,7 +995,7 @@ export const transactions = [
 
   // // ── APR 2025 ──────────────────────────────────────────────
   // { id: 45, date: '2025-04-01', displayDate: '1 Apr 2025',  amount: '₹47,000.00', type: 'credit', narration: 'SALARY CREDIT - APR 2025 - AU SMALL FINANCE BANK LTD/PAYROLL (REVISED)', chequeRef: 'SAL2025048507', valueDate: '1 Apr 2025' },
-  // { id: 46, date: '2025-04-05', displayDate: '5 Apr 2025',  amount: '₹9,000.00',  type: 'debit',  narration: 'NEFT/RENT PAYMENT/KOTAK MAHINDRA BANK/MR DINESH PATIL/HOUSE RENT APR 2025', chequeRef: 'NEFT250405001', valueDate: '5 Apr 2025' },
+  // { id: 46, date: '2025-04-05', displayDate: '5 Apr 2025',  amount: '₹9,000.00',  type: 'credit',  narration: 'NEFT/CR/RENT PAYMENT/KOTAK MAHINDRA BANK/MR DINESH PATIL/HOUSE RENT APR 2025', chequeRef: 'NEFT250405001', valueDate: '5 Apr 2025' },
   // { id: 47, date: '2025-04-10', displayDate: '10 Apr 2025', amount: '₹12,000.00', type: 'debit',  narration: 'NEFT/HOUSING LOAN EMI/HDFC BANK/LN0045678901/KESHAV PRALHAD GOLANDE', chequeRef: 'NEFT250410001', valueDate: '10 Apr 2025' },
   // { id: 48, date: '2025-04-20', displayDate: '20 Apr 2025', amount: '₹8,000.00',  type: 'debit',  narration: 'UPI/DR/CLEARTRIP/ICICI/FLIGHT BOOKING PUNE-DELHI', chequeRef: 'UPI250420001', valueDate: '20 Apr 2025' },
 
