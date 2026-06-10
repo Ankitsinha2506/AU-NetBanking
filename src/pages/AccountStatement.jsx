@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ROUTES } from '../core/constants/routes.constant'
-import { accountInfo, getTransactionsByPeriod } from '../data/transactions'
+import { accountInfo, formatDateLabel, getTransactionsByPeriod } from '../data/transactions'
 import { downloadStatementPDF } from '../data/generatePDF'
 import auLogo from '../assets/Login Logo/aulogo_new.befc8eb34f4c700d.svg'
 import accountsIcon from '../assets/Accountslogo/accounts_fill_icon.3bd345409f8966ec.svg'
@@ -64,23 +64,26 @@ export default function AccountStatement() {
     setShowCustomTable(false)
   }
 
-  const filtered = getTransactionsByPeriod(activeTab, customFrom, customTo).filter(tx => {
-    if (txFilter === 'All') return true
-    return tx.type === txFilter.toLowerCase()
-  }).reverse()
+  const filteredAsc = getTransactionsByPeriod(activeTab, customFrom, customTo)
+    .filter(tx => {
+      if (txFilter === 'All') return true
+      return tx.type === txFilter.toLowerCase()
+    })
+    .sort((a, b) => new Date(a.date) - new Date(b.date))
+
+  const filtered = [...filteredAsc].reverse()
 
   function calcBalances(txList) {
-    const chron = [...txList].reverse()
     let bal = 0
     const balMap = {}
-    chron.forEach(tx => {
+    txList.forEach(tx => {
       const amt = parseFloat(tx.amount.replace(/[₹,]/g, ''))
       bal = tx.type === 'credit' ? bal + amt : bal - amt
       balMap[tx.id] = bal
     })
     return balMap
   }
-  const balances = calcBalances(filtered)
+  const balances = calcBalances(filteredAsc)
 
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#fdf0f0' }}>
@@ -118,7 +121,7 @@ export default function AccountStatement() {
 
           {/* Left */}
           <div className="flex-1">
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm px-7 py-6" style={{overflow:'hidden'}}>
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm px-7 py-6" style={{ overflow: 'hidden' }}>
 
               {/* Account number */}
               <div className="mb-5">
@@ -134,11 +137,10 @@ export default function AccountStatement() {
                   <button
                     key={tab}
                     onClick={() => handleTabChange(tab)}
-                    className={`pb-3 text-[14px] font-medium whitespace-nowrap transition-colors ${
-                      activeTab === tab
+                    className={`pb-3 text-[14px] font-medium whitespace-nowrap transition-colors ${activeTab === tab
                         ? 'border-b-2 border-orange-500 text-orange-500'
                         : 'text-gray-400 hover:text-gray-600'
-                    }`}
+                      }`}
                   >
                     {tab}
                   </button>
@@ -158,8 +160,8 @@ export default function AccountStatement() {
                     </button>
                     <button className="flex items-center gap-2 text-orange-500 text-[14px] font-semibold hover:opacity-80">
                       <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#E8540A" strokeWidth="2">
-                        <rect x="2" y="4" width="20" height="16" rx="2"/>
-                        <polyline points="2,4 12,13 22,4"/>
+                        <rect x="2" y="4" width="20" height="16" rx="2" />
+                        <polyline points="2,4 12,13 22,4" />
                       </svg>
                       Email
                     </button>
@@ -234,17 +236,21 @@ export default function AccountStatement() {
                       <div className="flex items-center gap-10">
                         <button onClick={() => setShowCustomTable(true)} className="flex items-center gap-2 text-orange-500 text-[14px] font-semibold hover:opacity-80">
                           <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#E8540A" strokeWidth="2">
-                            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                            <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
                           </svg>
                           View
                         </button>
                         <button className="flex items-center gap-2 text-orange-500 text-[14px] font-semibold hover:opacity-80">
                           <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#E8540A" strokeWidth="2">
-                            <rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/>
+                            <rect x="2" y="4" width="20" height="16" rx="2" /><polyline points="2,4 12,13 22,4" />
                           </svg>
                           Email
                         </button>
-                        <button onClick={() => downloadStatementPDF(filtered, `${customFrom} to ${customTo}`, balances)} className="flex items-center gap-2 text-orange-500 text-[14px] font-semibold hover:opacity-80">
+                        <button onClick={() => downloadStatementPDF(
+                          filtered,
+                          `${formatDateLabel(customFrom)} to ${formatDateLabel(customTo)}`,
+                          balances
+                        )} className="flex items-center gap-2 text-orange-500 text-[14px] font-semibold hover:opacity-80">
                           <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#E8540A" strokeWidth="2">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3" />
                           </svg>

@@ -168,22 +168,32 @@ export async function downloadStatementPDF(transactions, period, balances = {}) 
   doc.setTextColor(25, 25, 25)
   doc.text(period, lv, y)
   lbl('Closing Balance(Rs)', rx, y); col(rv, y)
-  const closing = transactions.length > 0
-    ? (balances[transactions[transactions.length - 1].id] || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })
+  const sortedTransactionsDesc = [...transactions].sort((a, b) => new Date(b.date) - new Date(a.date))
+  const sortedTransactionsAsc = [...sortedTransactionsDesc].reverse()
+  const pdfBalances = {}
+  let pdfBalance = 0
+  sortedTransactionsAsc.forEach(tx => {
+    const amt = parseFloat(tx.amount.replace(/[₹,]/g, ''))
+    pdfBalance = tx.type === 'credit' ? pdfBalance + amt : pdfBalance - amt
+    pdfBalances[tx.id] = pdfBalance
+  })
+
+  const closing = sortedTransactionsDesc.length > 0
+    ? (pdfBalances[sortedTransactionsDesc[0].id] || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })
     : '0.00'
   doc.setTextColor(25, 25, 25)
   v(closing, rv, y)
   y += 8
 
   // ── 3. Transaction table ──────────────────────────────────────
-  const rows = transactions.map(tx => [
+  const rows = sortedTransactionsDesc.map(tx => [
     tx.displayDate,
     tx.valueDate,
     tx.narration,
     tx.chequeRef || '-',
     tx.type === 'debit'  ? tx.amount.replace('\u20b9', '') : '-',
     tx.type === 'credit' ? tx.amount.replace('\u20b9', '') : '-',
-    tx.runningBalance ? tx.runningBalance.replace('\u20b9', '') : (balances[tx.id] ? balances[tx.id].toLocaleString('en-IN', { minimumFractionDigits: 2 }) : '-'),
+    tx.runningBalance ? tx.runningBalance.replace('\u20b9', '') : (pdfBalances[tx.id] ? pdfBalances[tx.id].toLocaleString('en-IN', { minimumFractionDigits: 2 }) : '-'),
   ])
 
   autoTable(doc, {
@@ -215,11 +225,11 @@ export async function downloadStatementPDF(transactions, period, balances = {}) 
     columnStyles: {
       0: { cellWidth: 22, halign: 'center' },
       1: { cellWidth: 22, halign: 'center' },
-      2: { cellWidth: 45 },
-      3: { cellWidth: 40 },
+      2: { cellWidth: 48 },
+      3: { cellWidth: 37 },
       4: { cellWidth: 22, halign: 'right', valign: 'top', cellPadding: { top: 3, bottom: 1.5, left: 2, right: 2 } },
       5: { cellWidth: 22, halign: 'right', valign: 'top', cellPadding: { top: 3, bottom: 1.5, left: 2, right: 2 } },
-      6: { cellWidth: 22, halign: 'right', valign: 'top', cellPadding: { top: 3, bottom: 1.5, left: 2, right: 2 } },
+      6: { cellWidth: 26, halign: 'right', valign: 'top', cellPadding: { top: 3, bottom: 1.5, left: 2, right: 2 } },
     },
     margin: { left: 7, right: 7, top: headerH + 4, bottom: 55 },
     tableWidth: 'fixed',
