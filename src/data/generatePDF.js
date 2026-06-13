@@ -185,53 +185,12 @@ export async function downloadStatementPDF(transactions, period, balances = {}) 
   v(closing, rv, y)
   y += 10
 
-  // Summary counts and totals
   const creditTransactions = transactions.filter(tx => tx.type === 'credit')
   const debitTransactions = transactions.filter(tx => tx.type === 'debit')
-  const totalTransactions = transactions.length
-  const creditCount = creditTransactions.length
-  const debitCount = debitTransactions.length
   const creditTotal = creditTransactions.reduce((sum, tx) => sum + parseFloat(tx.amount.replace(/[₹,]/g, '')), 0)
   const debitTotal = debitTransactions.reduce((sum, tx) => sum + parseFloat(tx.amount.replace(/[₹,]/g, '')), 0)
   const creditTotalFormatted = creditTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })
   const debitTotalFormatted = debitTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })
-
-  const summaryBoxHeight = 24
-  const summaryBoxW = 58
-  const summaryGap = 4
-
-  doc.setFillColor(244, 244, 244)
-  doc.roundedRect(lx, y, summaryBoxW, summaryBoxHeight, 3, 3, 'F')
-  doc.roundedRect(lx + summaryBoxW + summaryGap, y, summaryBoxW, summaryBoxHeight, 3, 3, 'F')
-  doc.roundedRect(lx + 2 * (summaryBoxW + summaryGap), y, summaryBoxW, summaryBoxHeight, 3, 3, 'F')
-
-  doc.setFont('helvetica', 'normal')
-  doc.setFontSize(7.5)
-  doc.setTextColor(100, 100, 100)
-  doc.text('Transactions', lx + 4, y + 6)
-  doc.text('Credit', lx + summaryBoxW + summaryGap + 4, y + 6)
-  doc.text('Debit', lx + 2 * (summaryBoxW + summaryGap) + 4, y + 6)
-
-  doc.setFont('helvetica', 'bold')
-  doc.setFontSize(10)
-  doc.setTextColor(30, 30, 30)
-  doc.text(`${totalTransactions}`, lx + 4, y + 17)
-
-  doc.setFont('helvetica', 'normal')
-  doc.setFontSize(7.5)
-  doc.setTextColor(100, 100, 100)
-  doc.text(`Count: ${creditCount}`, lx + summaryBoxW + summaryGap + 4, y + 14)
-  doc.text(`Count: ${debitCount}`, lx + 2 * (summaryBoxW + summaryGap) + 4, y + 14)
-
-  doc.setFont('helvetica', 'bold')
-  doc.setFontSize(10)
-  doc.setTextColor(25, 102, 51)
-  doc.text(`₹${creditTotalFormatted}`, lx + summaryBoxW + summaryGap + 4, y + 18)
-  doc.setTextColor(190, 24, 24)
-  doc.text(`₹${debitTotalFormatted}`, lx + 2 * (summaryBoxW + summaryGap) + 4, y + 18)
-
-  y += summaryBoxHeight + 8
-  doc.setTextColor(25, 25, 25)
 
   // ── 3. Transaction table ──────────────────────────────────────
   const rows = sortedTransactionsDesc.map(tx => [
