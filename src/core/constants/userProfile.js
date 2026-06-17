@@ -28,7 +28,7 @@ const userProfile = {
   accountNumber: '2601235316331578',
   accountType: 'AU Salary Account-Value',
   customerType: 'Individual - Full KYC',
-  branch: 'Wakad Pune',
+  branch: 'Aundh Pune',
   ifsc: 'AUBL0002353',
   nominee: 'Not Registered',
   annualIncome: '2.5 Lakh - 5 Lakh',
