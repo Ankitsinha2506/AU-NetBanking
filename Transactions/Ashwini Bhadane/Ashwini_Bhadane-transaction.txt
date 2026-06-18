@@ -73,7 +73,7 @@ export const transactions = [
     id: 8,
     date: '2026-02-27',
     displayDate: '27 Feb 2026',
-    amount: '₹52,384.00',
+    amount: '₹52,284.00',
     type: 'credit',
     narration: 'SALARY CREDIT - FEB 2026 - NIMBJA SECURITY SOLUTIONS/PAYROLL',
     chequeRef: 'SAL2026025238',
@@ -99,6 +99,7 @@ export const transactions = [
     chequeRef: 'SAL2026045238',
     valueDate: '30 Apr 2026'
   },
+  
   
   {
     id: 108,

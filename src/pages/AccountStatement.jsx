@@ -64,14 +64,12 @@ export default function AccountStatement() {
     setShowCustomTable(false)
   }
 
-  const filteredAsc = getTransactionsByPeriod(activeTab, customFrom, customTo)
+  const filtered = getTransactionsByPeriod(activeTab, customFrom, customTo)
     .filter(tx => {
       if (txFilter === 'All') return true
       return tx.type === txFilter.toLowerCase()
     })
     .sort((a, b) => new Date(a.date) - new Date(b.date))
-
-  const filtered = [...filteredAsc].reverse()
 
   function calcBalances(txList) {
     let bal = 0
@@ -83,7 +81,7 @@ export default function AccountStatement() {
     })
     return balMap
   }
-  const balances = calcBalances(filteredAsc)
+  const balances = calcBalances(filtered)
 
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#fdf0f0' }}>

@@ -158,7 +158,7 @@ export async function downloadStatementPDF(transactions, period, balances = {}) 
   // Statement Date | Opening Balance
   const today = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
   lbl('Statement Date', lx, y);   col(lv, y); v(today, lv, y)
-  lbl('Opening Balance(Rs)', rx, y);  col(rv, y); v('0.00', rv, y)
+  lbl('Opening Balance(Rs)', rx, y);  col(rv, y); v('1000.00', rv, y)
   y += ROW
 
   // Statement Period | Closing Balance
@@ -168,18 +168,18 @@ export async function downloadStatementPDF(transactions, period, balances = {}) 
   doc.setTextColor(25, 25, 25)
   doc.text(period, lv, y)
   lbl('Closing Balance(Rs)', rx, y); col(rv, y)
-  const sortedTransactionsDesc = [...transactions].sort((a, b) => new Date(b.date) - new Date(a.date))
-  const sortedTransactionsAsc = [...sortedTransactionsDesc].reverse()
+  const sortedTransactions = [...transactions].sort((a, b) => new Date(a.date) - new Date(b.date))
+
   const pdfBalances = {}
   let pdfBalance = 0
-  sortedTransactionsAsc.forEach(tx => {
+  sortedTransactions.forEach(tx => {
     const amt = parseFloat(tx.amount.replace(/[₹,]/g, ''))
     pdfBalance = tx.type === 'credit' ? pdfBalance + amt : pdfBalance - amt
     pdfBalances[tx.id] = pdfBalance
   })
 
-  const closing = sortedTransactionsDesc.length > 0
-    ? (pdfBalances[sortedTransactionsDesc[0].id] || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })
+  const closing = sortedTransactions.length > 0
+    ? (pdfBalances[sortedTransactions[sortedTransactions.length - 1].id] || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })
     : '0.00'
   doc.setTextColor(25, 25, 25)
   v(closing, rv, y)
@@ -193,7 +193,7 @@ export async function downloadStatementPDF(transactions, period, balances = {}) 
   const debitTotalFormatted = debitTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })
 
   // ── 3. Transaction table ──────────────────────────────────────
-  const rows = sortedTransactionsDesc.map(tx => [
+  const rows = sortedTransactions.map(tx => [
     tx.displayDate,
     tx.valueDate,
     tx.narration,
