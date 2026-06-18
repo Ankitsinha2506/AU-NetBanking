@@ -65,7 +65,7 @@ export const transactions = [
     displayDate: '03 May 2021',
     amount: '₹1,250.00',
     type: 'debit',
-    narration: 'UPI/DR/DMART READY/HDFC BANK/GROCERY PURCHASE',
+    narration: 'UPI/DR/NETFLIX INDIA/HDFC BANK/SUBSCRIPTION'
     chequeRef: 'UPI210503001',
     valueDate: '03 May 2021'
   },
@@ -156,7 +156,7 @@ export const transactions = [
     displayDate: '03 Jun 2021',
     amount: '₹1,350.00',
     type: 'debit',
-    narration: 'UPI/DR/DMART READY/HDFC BANK/GROCERY PURCHASE',
+    narration: 'UPI/DR/BOOKMYSHOW/HDFC BANK/MOVIE TICKETS'
     chequeRef: 'UPI210603011',
     valueDate: '03 Jun 2021'
   },
@@ -256,7 +256,7 @@ export const transactions = [
     displayDate: '02 Jul 2021',
     amount: '₹1,450.00',
     type: 'debit',
-    narration: 'UPI/DR/DMART READY/HDFC BANK/GROCERY PURCHASE',
+    narration: 'UPI/DR/APOLLO PHARMACY/HDFC BANK/MEDICINE PURCHASE'
     chequeRef: 'UPI210702021',
     valueDate: '02 Jul 2021'
   },
@@ -357,7 +357,7 @@ export const transactions = [
     displayDate: '03 Aug 2021',
     amount: '₹1,520.00',
     type: 'debit',
-    narration: 'UPI/DR/DMART READY/HDFC BANK/GROCERY PURCHASE',
+    narration: 'UPI/DR/FLIPKART INTERNET/HDFC BANK/ONLINE PURCHASE'
     chequeRef: 'UPI210803031',
     valueDate: '03 Aug 2021'
   },
@@ -458,7 +458,7 @@ export const transactions = [
     displayDate: '03 Sep 2021',
     amount: '₹1,450.00',
     type: 'debit',
-    narration: 'UPI/DR/DMART READY/HDFC BANK/GROCERY PURCHASE',
+    narration: 'UPI/DR/APOLLO PHARMACY/HDFC BANK/MEDICINE PURCHASE'
     chequeRef: 'UPI210903041',
     valueDate: '03 Sep 2021'
   },
@@ -559,7 +559,7 @@ export const transactions = [
     displayDate: '04 Oct 2021',
     amount: '₹1,580.00',
     type: 'debit',
-    narration: 'UPI/DR/DMART READY/HDFC BANK/GROCERY PURCHASE',
+    narration: 'UPI/DR/FLIPKART INTERNET/HDFC BANK/ONLINE PURCHASE'
     chequeRef: 'UPI211004051',
     valueDate: '04 Oct 2021'
   },
