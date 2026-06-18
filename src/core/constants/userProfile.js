@@ -1,5 +1,5 @@
 const userProfile = {
-  name: 'DIPALI SHASHANK JARI KOTE',
+  name: 'DIPALI SHASHANK JARIKOTE',
   firstName: 'DIPALI',
   savingsBalance: ',2,000.00',
   custId: '******54',
