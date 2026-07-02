@@ -1,6 +1,6 @@
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
-import { accountInfo } from './transactions'
+import { accountInfo, computeRunningBalances, OPENING_BALANCE, sortTransactions } from './transactions'
 import pdfLogoUrl from '../assets/pdflogo.svg'
 
 function loadLogoOnPurple(url, targetW, targetH) {
@@ -77,7 +77,7 @@ function addFooter(doc) {
   }
 }
 
-export async function downloadStatementPDF(transactions, period, balances = {}) {
+export async function downloadStatementPDF(transactions, period) {
   const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' })
   const W = doc.internal.pageSize.getWidth()
 
@@ -158,7 +158,7 @@ export async function downloadStatementPDF(transactions, period, balances = {}) 
   // Statement Date | Opening Balance
   const today = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
   lbl('Statement Date', lx, y);   col(lv, y); v(today, lv, y)
-  lbl('Opening Balance(Rs)', rx, y);  col(rv, y); v('1000.00', rv, y)
+  lbl('Opening Balance(Rs)', rx, y);  col(rv, y); v(OPENING_BALANCE.toLocaleString('en-IN', { minimumFractionDigits: 2 }), rv, y)
   y += ROW
 
   // Statement Period | Closing Balance
@@ -168,19 +168,12 @@ export async function downloadStatementPDF(transactions, period, balances = {}) 
   doc.setTextColor(25, 25, 25)
   doc.text(period, lv, y)
   lbl('Closing Balance(Rs)', rx, y); col(rv, y)
-  const sortedTransactions = [...transactions].sort((a, b) => new Date(a.date) - new Date(b.date))
+  const sortedTransactions = sortTransactions(transactions)
+  const runningBalances = computeRunningBalances(sortedTransactions)
 
-  const pdfBalances = {}
-  let pdfBalance = 0
-  sortedTransactions.forEach(tx => {
-    const amt = parseFloat(tx.amount.replace(/[₹,]/g, ''))
-    pdfBalance = tx.type === 'credit' ? pdfBalance + amt : pdfBalance - amt
-    pdfBalances[tx.id] = pdfBalance
-  })
-
-  const closing = sortedTransactions.length > 0
-    ? (pdfBalances[sortedTransactions[sortedTransactions.length - 1].id] || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })
-    : '0.00'
+  const closing = runningBalances.length > 0
+    ? runningBalances[runningBalances.length - 1].toLocaleString('en-IN', { minimumFractionDigits: 2 })
+    : OPENING_BALANCE.toLocaleString('en-IN', { minimumFractionDigits: 2 })
   doc.setTextColor(25, 25, 25)
   v(closing, rv, y)
   y += 10
@@ -193,14 +186,14 @@ export async function downloadStatementPDF(transactions, period, balances = {}) 
   const debitTotalFormatted = debitTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })
 
   // ── 3. Transaction table ──────────────────────────────────────
-  const rows = sortedTransactions.map(tx => [
+  const rows = sortedTransactions.map((tx, idx) => [
     tx.displayDate,
     tx.valueDate,
     tx.narration,
     tx.chequeRef || '-',
     tx.type === 'debit'  ? tx.amount.replace('\u20b9', '') : '-',
     tx.type === 'credit' ? tx.amount.replace('\u20b9', '') : '-',
-    tx.runningBalance ? tx.runningBalance.replace('\u20b9', '') : (pdfBalances[tx.id] ? pdfBalances[tx.id].toLocaleString('en-IN', { minimumFractionDigits: 2 }) : '-'),
+    runningBalances[idx].toLocaleString('en-IN', { minimumFractionDigits: 2 }),
   ])
 
   autoTable(doc, {
@@ -235,8 +228,8 @@ export async function downloadStatementPDF(transactions, period, balances = {}) 
       2: { cellWidth: 48 },
       3: { cellWidth: 37 },
       4: { cellWidth: 22, halign: 'right', valign: 'top', cellPadding: { top: 3, bottom: 1.5, left: 2, right: 2 } },
-      5: { cellWidth: 22, halign: 'right', valign: 'top', cellPadding: { top: 3, bottom: 1.5, left: 2, right: 2 } },
-      6: { cellWidth: 26, halign: 'right', valign: 'top', cellPadding: { top: 3, bottom: 1.5, left: 2, right: 2 } },
+      5: { cellWidth: 24, halign: 'right', valign: 'top', cellPadding: { top: 3, bottom: 1.5, left: 2, right: 2 } },
+      6: { cellWidth: 22, halign: 'right', valign: 'top', cellPadding: { top: 3, bottom: 1.5, left: 2, right: 2 } },
     },
     foot: [[
       '',

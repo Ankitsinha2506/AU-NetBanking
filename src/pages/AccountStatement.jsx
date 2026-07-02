@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ROUTES } from '../core/constants/routes.constant'
-import { accountInfo, formatDateLabel, getTransactionsByPeriod } from '../data/transactions'
+import { accountInfo, computeRunningBalances, formatDateLabel, getTransactionsByPeriod, sortTransactions } from '../data/transactions'
 import { downloadStatementPDF } from '../data/generatePDF'
 import auLogo from '../assets/Login Logo/aulogo_new.befc8eb34f4c700d.svg'
 import accountsIcon from '../assets/Accountslogo/accounts_fill_icon.3bd345409f8966ec.svg'
@@ -64,24 +64,15 @@ export default function AccountStatement() {
     setShowCustomTable(false)
   }
 
-  const filtered = getTransactionsByPeriod(activeTab, customFrom, customTo)
-    .filter(tx => {
+  const filtered = sortTransactions(
+    getTransactionsByPeriod(activeTab, customFrom, customTo).filter(tx => {
       if (txFilter === 'All') return true
       return tx.type === txFilter.toLowerCase()
     })
-    .sort((a, b) => new Date(a.date) - new Date(b.date))
-
-  function calcBalances(txList) {
-    let bal = 0
-    const balMap = {}
-    txList.forEach(tx => {
-      const amt = parseFloat(tx.amount.replace(/[₹,]/g, ''))
-      bal = tx.type === 'credit' ? bal + amt : bal - amt
-      balMap[tx.id] = bal
-    })
-    return balMap
-  }
-  const balances = calcBalances(filtered)
+  )
+  const balances = computeRunningBalances(filtered)
+  const displayTransactions = filtered.filter((tx, idx) => balances[idx] !== undefined)
+  const displayBalances = balances.filter(b => b !== undefined)
 
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#fdf0f0' }}>
@@ -150,7 +141,7 @@ export default function AccountStatement() {
                 <div className="border border-gray-200 rounded-xl px-6 py-5 mb-6">
                   <p className="text-gray-400 text-[13px] mb-4">Action on account statement</p>
                   <div className="flex items-center gap-10">
-                    <button onClick={() => downloadStatementPDF(filtered, resolvePeriodLabel(activeTab), balances)} className="flex items-center gap-2 text-orange-500 text-[14px] font-semibold hover:opacity-80">
+                    <button onClick={() => downloadStatementPDF(filtered, resolvePeriodLabel(activeTab))} className="flex items-center gap-2 text-orange-500 text-[14px] font-semibold hover:opacity-80">
                       <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#E8540A" strokeWidth="2">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3" />
                       </svg>
@@ -246,8 +237,7 @@ export default function AccountStatement() {
                         </button>
                         <button onClick={() => downloadStatementPDF(
                           filtered,
-                          `${formatDateLabel(customFrom)} to ${formatDateLabel(customTo)}`,
-                          balances
+                          `${formatDateLabel(customFrom)} to ${formatDateLabel(customTo)}`
                         )} className="flex items-center gap-2 text-orange-500 text-[14px] font-semibold hover:opacity-80">
                           <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#E8540A" strokeWidth="2">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3" />
@@ -291,7 +281,7 @@ export default function AccountStatement() {
                       <span><img src={arrowRightIcon} alt="" className="w-4 h-4" style={{ filter: 'invert(55%) sepia(90%) saturate(500%) hue-rotate(10deg)' }} /></span>
                     </div>
                   ) : (
-                    filtered.map((tx, idx) => (
+                    displayTransactions.map((tx, idx) => (
                       <div key={tx.id}
                         className="grid grid-cols-[1fr_1.2fr_1.8fr_1fr_1.2fr_0.5fr] gap-2 py-6 border-b border-gray-100 items-center px-2 bg-white"
                       >
@@ -301,7 +291,7 @@ export default function AccountStatement() {
                         </span>
                         <span className="text-gray-500 text-[13px] leading-snug">{tx.narration}</span>
                         <span className="text-gray-600 text-[14px]">{tx.valueDate}</span>
-                        <span className="text-gray-700 text-[14px]">₹{balances[tx.id]?.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
+                        <span className="text-gray-700 text-[14px]">₹{displayBalances[idx]?.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
                         <span><img src={arrowRightIcon} alt="" className="w-4 h-4" style={{ filter: 'invert(55%) sepia(90%) saturate(500%) hue-rotate(10deg)' }} /></span>
                       </div>
                     ))
